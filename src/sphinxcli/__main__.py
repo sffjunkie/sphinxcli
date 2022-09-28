@@ -52,8 +52,6 @@ class SettingCommand(click.Command):
 @click.pass_context
 def cli(ctx: click.core.Context):
     """A Sphinx document creation CLI."""
-    locale.setlocale(locale.LC_MESSAGES, ("fr_FR", "UTF-8"))
-
     rich.traceback.install(suppress=[click])
     console = rich.console.Console(highlight=False)
 
