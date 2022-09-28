@@ -137,20 +137,6 @@ def settings(ctx: click.core.Context) -> None:
     console.print(settings)
 
 
-# @cli.command()
-# @click.pass_context
-# def builders(ctx: click.core.Context) -> None:
-#     """Display a list of the builders configured to run"""
-#     console = ctx.obj["console"]
-#     tool_config = ctx.obj["config"]
-#     builders = tool_config.settings.builders
-#     if builders:
-#         builders_str = ", ".join(builders)
-#         console.print(f"[green]Builders:[/] {builders_str}")
-#     else:
-#         console.print("[yellow]No builders configured[/]")
-
-
 @cli.command()
 @click.pass_context
 @click.argument("builders", default="")
