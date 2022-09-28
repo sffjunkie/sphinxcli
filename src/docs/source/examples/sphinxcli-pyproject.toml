@@ -1,0 +1,8 @@
+
+[tool.sphinxcli]
+builders = ["html"]
+config = "src/docs/source"
+source = "src/docs/source"
+target = "docs"
+doctree = "src/docs/build/doctree"
+languages =["fr"]

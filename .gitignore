@@ -1,0 +1,14 @@
+__pycache__
+.venv
+.mypy_cache
+.pytest_cache
+.python-version
+.vscode
+/dist
+/file
+out.txt
+poetry.toml
+
+thoughts.md
+docs
+!src/docs

@@ -1,0 +1,170 @@
+from dataclasses import dataclass, fields
+from os import environ
+from os.path import expanduser
+from pathlib import Path
+from typing import Any, Literal, NamedTuple
+
+import tomlkit
+from typing_extensions import Self
+
+from sphinxcli.defaults import DEFAULT_BUILDERS, DEFAULT_LANGUAGES, DEFAULT_TARGET_ORDER
+from sphinxcli.findfile import rfindfile
+from sphinxcli.toml import set_value
+
+Builder = Literal["html", "latex", "epub3", "texinfo"]
+
+Target = Literal["docs", "doctrees"]
+
+
+class Setting(NamedTuple):
+    name: str
+    value: Any
+
+
+@dataclass
+class Settings:
+    """SphinxCLI settings
+
+    config:
+        Sphinx configuration file or directory
+    source:
+        Source directory
+    target:
+        Target (build) directory
+    targets:
+        Builder specific overrides for target directory
+    builder:
+        List of builders to run
+    builders:
+        Configuration for individual builders
+    doctree:
+        Directory to store doctrees
+    languages:
+        The target languages for the docs
+    target_order:
+        The order in which to output files to the target are written either
+        "builder" which outputs to "builder/language" (the default) or
+        "language" that outputs to "language/builder"
+    """
+
+    source: Path
+    target: Path
+    builders: list[Builder]
+    languages: list[str]
+    config: Path
+    doctree: Path | None
+    target_order: str
+
+    def names(self) -> list[str]:
+        return [f.name for f in fields(self)]
+
+    def __str__(self) -> str:
+        def none_to_blank(value: Any | None) -> Any:
+            if value is None:
+                return ""
+            else:
+                return value
+
+        def get_value(name: str) -> Any:
+            try:
+                value = getattr(self, name)
+                return none_to_blank(value)
+            except:
+                pass
+
+        max_len = max([len(f.name) for f in fields(self)])
+
+        info = [(f.name, get_value(f.name)) for f in fields(self)]
+        result = [f"  {i[0]:<{max_len}} = {i[1]}" for i in info]
+        return "\n".join(result)
+
+
+class ToolConfig:
+    pyproject: Path | None
+    settings: Settings
+
+    def __init__(self):
+        tool_config, pyproject = load_config()
+        self.pyproject = pyproject
+
+        doctree = tool_config.get("doctree", None)
+        if doctree is not None:
+            doctree = Path(self.resolve_dir(doctree))
+
+        builders = list(tool_config.get("builders", DEFAULT_BUILDERS))
+        config = str(tool_config.get("config", ""))
+        source = str(tool_config.get("source", ""))
+        target = str(tool_config.get("target", ""))
+        doctree = str(tool_config.get("doctree", ""))
+        languages = [
+            str(lang) for lang in tool_config.get("languages", DEFAULT_LANGUAGES)
+        ]
+        target_order = str(tool_config.get("target_order", DEFAULT_TARGET_ORDER))
+
+        self.settings = Settings(
+            builders=builders,
+            config=Path(self.resolve_dir(config)),
+            source=Path(self.resolve_dir(source)),
+            target=Path(self.resolve_dir(target)),
+            doctree=Path(self.resolve_dir(doctree)),
+            languages=languages,
+            target_order=target_order,
+        )
+
+    def get(self, setting: str) -> Any:
+        value = getattr(self.settings, setting, None)
+        if value is None:
+            raise KeyError(f"Unknown setting name '{setting}'")
+
+        return value
+
+    def set(self, setting: str, value: Any) -> Any:
+        current_value = self.get(setting)
+        if current_value is None:
+            return current_value
+
+        if isinstance(current_value, Path) and not isinstance(value, Path):
+            result = Path(value)
+            setattr(self, setting, result)
+        else:
+            setattr(self, setting, value)
+            result = value
+
+        set_value(self.pyproject, "sphinxcli", setting, result)
+        return result
+
+    def update(self, other: Self):
+        self.settings = other.settings
+
+    def resolve_dir(self, dir: str) -> str:
+        if dir.startswith("$"):
+            slash = dir.find("/")
+            if slash != -1:
+                envvar = dir[1:slash]
+            else:
+                envvar = dir[1:]
+
+            try:
+                value = environ[envvar]
+                dir = dir.replace(f"${envvar}", value)
+            except KeyError:
+                pass
+
+        if dir.startswith("~"):
+            return expanduser(dir)
+
+        return dir
+
+
+def load_pyproject() -> tuple[dict[str, Any], Path | None]:
+    pyproject = rfindfile("pyproject.toml")
+    if pyproject is not None:
+        with open(pyproject, "rb") as configfp:
+            return tomlkit.load(configfp), pyproject
+
+    return {}, None
+
+
+def load_config() -> tuple[dict[str, Any], Path | None]:
+    config, pyproject = load_pyproject()
+    return config["tool"].get("sphinxcli", {}).value, pyproject
