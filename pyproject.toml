@@ -8,6 +8,7 @@ packages = [
     { include = "sphinxcli", from = "src" },
     { include = "sphinxcli/py.typed", from = "src" },
 ]
+license = "Apache-2.0"
 
 [tool.isort]
 profile = "black"
