@@ -119,10 +119,6 @@ def set(ctx: click.core.Context, setting: str, value: str) -> None:
     console = ctx.obj["console"]
     try:
         value = ctx.obj["config"].set(setting, value)
-        # if isinstance(value, list):
-        #     console.print(f"[{', '.join(value)}]")
-        # else:
-        #     console.print(value)
     except KeyError as exc:
         console.print(f"[yellow]{exc.args[0]}[/]")
 
