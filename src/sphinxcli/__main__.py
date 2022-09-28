@@ -129,7 +129,7 @@ def set(ctx: click.core.Context, setting: str, value: str) -> None:
 
 @cli.command()
 @click.pass_context
-def settings(ctx: click.core.Context, absolute: bool) -> None:
+def settings(ctx: click.core.Context) -> None:
     """Display the current values of all settings"""
     console = ctx.obj["console"]
     settings = str(ctx.obj["config"].settings)
