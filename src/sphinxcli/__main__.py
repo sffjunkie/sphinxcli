@@ -125,16 +125,7 @@ def settings(ctx: click.core.Context) -> None:
 @cli.command()
 @click.pass_context
 @click.argument("builders", default="")
-@click.argument("source", default="")
-@click.argument("target", default="")
-@click.argument("config", default="")
-@click.argument("doctree", default="")
-@click.option(
-    "-l",
-    "--languages",
-    default="",
-    help="A language or list of languages to generate separated by | characters e.g. `en` or `en|fr`",
-)
+@click.argument("languages", default="")
 @click.option(
     "-o",
     "--order",
@@ -144,12 +135,8 @@ def settings(ctx: click.core.Context) -> None:
 # @click.option("-a", "--all", is_flag=True, default=False)
 def build(
     ctx: click.core.Context,
-    builders: str | list[str],
-    source: str,
-    target: str,
-    config: str,
-    doctree: str,
-    languages: list[str],
+    builders: str,
+    languages: str,
     order: str,
     # all: bool,
 ) -> None:
@@ -164,46 +151,25 @@ def build(
 
         builders: A Sphinx builder name or list of builder names separated by | characters e.g. html|latex
 
-        source: Source directory containing the files to process
-
-        target: A base directory where the generated files are output
-
-        config: Either a directory containing a `conf.py` file or the full path to a config file
-
-        doctree: The directory where doctrees are stored
+        languages: A language or list of languages to generate separated by | characters e.g. `en` or `en|fr`
     """
     console = ctx.obj["console"]
     tool_config = ctx.obj["config"]
 
     if builders:
-        _builders = builders
+        _builders = str_to_list(builders)
     else:
         _builders = tool_config.settings.builders
 
-    if source:
-        _source = Path(source)
-    else:
-        _source = tool_config.settings.source or Path(DEFAULT_SOURCE_PATH)
-
-    if target:
-        _target = Path(target)
-    else:
-        _target = tool_config.settings.target or Path(DEFAULT_TARGET_PATH)
-
-    if config:
-        _config = Path(config)
-    else:
-        _config = tool_config.settings.config or _source
-
-    if doctree:
-        _doctree = Path(doctree)
-    else:
-        _doctree = tool_config.settings.doctree or _target
-
     if languages:
-        _doc_languages = languages
+        _doc_languages = str_to_list(languages)
     else:
         _doc_languages = tool_config.settings.languages
+
+        _source = tool_config.settings.source or Path(DEFAULT_SOURCE_PATH)
+        _target = tool_config.settings.target or Path(DEFAULT_TARGET_PATH)
+        _config = tool_config.settings.config or _source
+        _doctree = tool_config.settings.doctree or _target
 
     if order:
         _target_order = order
