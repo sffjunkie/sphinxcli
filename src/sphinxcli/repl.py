@@ -66,6 +66,7 @@ def build_repl(ctx: click.core.Context) -> None:
         assert g.name == "cli"
 
         g.add_command(help)
+        g.add_command(question)
         g.add_command(exit)
         g.add_command(quit)
         if "repl" in g.commands:
