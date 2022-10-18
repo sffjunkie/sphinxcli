@@ -70,15 +70,8 @@ def cli(ctx: click.core.Context):
 @cli.group(invoke_without_command=True)
 @click.pass_context
 def repl(ctx: click.core.Context):
-    """Start a REPL (the default if no command specified)"""
+    """Start a REPL (The default if no command specified)"""
     build_repl(ctx)
-
-
-@cli.command()
-@click.pass_context
-def commands(ctx: click.core.Context):
-    """Display list of commands"""
-    help_commands(ctx)
 
 
 @cli.command(cls=SettingCommand)
