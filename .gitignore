@@ -8,6 +8,8 @@ __pycache__
 /file
 out.txt
 poetry.toml
+artifact/doctree
+artifact/dist
 
 thoughts.md
 docs
