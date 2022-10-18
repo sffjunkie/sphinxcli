@@ -21,8 +21,6 @@ try:
 except ImportError:
     Sphinx = None
 
-__version__ = "0.1.0"
-
 
 def sphinx_not_found() -> str:
     env_path = sys.exec_prefix
