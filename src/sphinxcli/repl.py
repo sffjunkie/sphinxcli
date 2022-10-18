@@ -50,9 +50,6 @@ def build_repl(ctx: click.core.Context) -> None:
         history_file.parent.mkdir(exist_ok=True)
         history_file.touch()
 
-    heading = HTML("<ansigreen>Sphinx CLI</ansigreen>")
-    print_formatted_text(heading)
-
     prompt = HTML("\n<ansigreen>sphinxcli</ansigreen>&gt; ")
 
     prompt_kwargs = {
