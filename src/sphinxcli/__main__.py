@@ -118,7 +118,7 @@ def settings(ctx: click.core.Context) -> None:
     """Display the current values of all settings"""
     console = ctx.obj["console"]
     settings = str(ctx.obj["config"].settings)
-    console.print("\n[green]pyproject.toml Settings[/]")
+    console.print("\n[green]SphinxCLI Settings[/]")
     console.print(settings)
 
 
