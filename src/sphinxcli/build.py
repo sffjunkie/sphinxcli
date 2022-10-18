@@ -118,7 +118,7 @@ def build_docs(tool_config: ToolConfig, params: BuildParameters) -> None:
         rich.print(f"  [blue]language[/]  = [white]{language}[/]")
         rich.print(f"  [blue]directory[/] = [white]{target}[/]")
 
-        confoverrides = {"language": language}
+        confoverrides: dict[str, Any] = {"language": language}
         if not first_build:
             confoverrides["suppress_warnings"] = ["app"]
         else:
