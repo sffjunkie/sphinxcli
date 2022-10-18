@@ -13,6 +13,13 @@ from sphinxcli.help import help_commands
 
 @click.command(name="?")
 @click.pass_context
+def question(ctx: click.core.Context):
+    """Display this list of commands"""
+    help_commands(ctx)
+
+
+@click.command(name="help")
+@click.pass_context
 def help(ctx: click.core.Context):
     """Display this list of commands"""
     help_commands(ctx)
