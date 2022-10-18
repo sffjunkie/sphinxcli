@@ -25,6 +25,13 @@ def exit(ctx: click.core.Context):
     raise ExitReplException()
 
 
+@click.command()
+@click.pass_context
+def quit(ctx: click.core.Context):
+    """Quit the REPL"""
+    raise ExitReplException()
+
+
 def build_repl(ctx: click.core.Context) -> None:
     xdg_cache = xdg.xdg_cache_home()
     if xdg_cache:
@@ -53,6 +60,7 @@ def build_repl(ctx: click.core.Context) -> None:
 
         g.add_command(help)
         g.add_command(exit)
+        g.add_command(quit)
         if "repl" in g.commands:
             del g.commands["repl"]
 
