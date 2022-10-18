@@ -58,6 +58,8 @@ def cli(ctx: click.core.Context):
         sys.exit(1)
 
     tool_config = ToolConfig()
+    tool_config.load()
+
     ctx.ensure_object(dict)
     ctx.obj["console"] = console
     ctx.obj["config"] = tool_config
