@@ -15,7 +15,7 @@ sphinxcli build html en:fr
 
 ## REPL
 
-If you don't use a command i.e. you jusrt call `sphinxcli` you'll be put into a REPL where the commands below
+If you don't use a command i.e. you just call `sphinxcli` you'll be put into a REPL where the commands below
 can be used one after another
 
 ```
