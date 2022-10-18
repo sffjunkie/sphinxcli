@@ -13,6 +13,7 @@ from sphinxcli.exec import exec_sphinx
 from sphinxcli.logging import add_log_handler
 from sphinxcli.parse import parse_sphinx_output
 from sphinxcli.tool_config import ToolConfig
+from sphinxcli.util import str_to_list
 
 try:
     from sphinx.application import Sphinx
@@ -65,7 +66,7 @@ def build_docs(tool_config: ToolConfig, params: BuildParameters) -> None:
     if not _builders:
         builders = tool_config.settings.builders
     elif isinstance(_builders, str):
-        builders = str_to_builders(_builders)
+        builders = str_to_list(_builders)
     else:
         builders = _builders
 
