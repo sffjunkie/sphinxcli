@@ -1,24 +1,21 @@
-from dataclasses import dataclass, fields
+from dataclasses import dataclass, field, fields
 from os import environ
 from os.path import expanduser
 from pathlib import Path
-from typing import Any, Literal, NamedTuple
+from typing import Any
 
-import tomlkit
 from typing_extensions import Self
 
-from sphinxcli.defaults import DEFAULT_BUILDERS, DEFAULT_LANGUAGES, DEFAULT_TARGET_ORDER
-from sphinxcli.findfile import rfindfile
-from sphinxcli.toml import set_value
-
-Builder = Literal["html", "latex", "epub3", "texinfo"]
-
-Target = Literal["docs", "doctrees"]
-
-
-class Setting(NamedTuple):
-    name: str
-    value: Any
+import sphinxcli.pyproject
+from sphinxcli.defaults import (
+    DEFAULT_BUILDERS,
+    DEFAULT_LANGUAGES,
+    DEFAULT_TARGET_ORDER,
+    PYPROJECT_TABLE_NAME,
+)
+from sphinxcli.util import str_to_list
+from sphinxcli.types import Setting, Builder, Target
+from sphinxcli.toml import read_document, get_table
 
 
 @dataclass
