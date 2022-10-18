@@ -49,6 +49,11 @@ Building html
   language  = fr
   directory = /sphinxcli/docs/html/fr
 
+sphinxcli> clean
+Cleaning all generated files
+  Removed documents in docs...
+  Removed doctrees in artifact/doctree...
+
 sphinxcli> quit
 ```
 
