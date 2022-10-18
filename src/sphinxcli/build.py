@@ -22,13 +22,6 @@ except ImportError:
 Builder = str
 
 
-def str_to_builders(text: str) -> list[Builder]:
-    if LIST_SEPARATOR in text:
-        return text.split(LIST_SEPARATOR)
-
-    return [text]
-
-
 class BuildParameters(TypedDict):
     source: Path
     target: Path
