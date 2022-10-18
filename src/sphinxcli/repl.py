@@ -5,7 +5,7 @@ import click
 import xdg
 from click_repl import repl as click_repl  # type: ignore
 from click_repl.exceptions import ExitReplException  # type: ignore
-from prompt_toolkit import HTML, print_formatted_text
+from prompt_toolkit import HTML
 from prompt_toolkit.history import FileHistory
 
 from sphinxcli.help import help_commands

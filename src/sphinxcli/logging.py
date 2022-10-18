@@ -1,7 +1,6 @@
 import io
 import logging
 
-import rich
 import sphinx.util.logging
 from sphinx.application import Sphinx
 

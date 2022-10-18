@@ -1,9 +1,6 @@
 """pyproject.toml handling"""
 
-from json import tool
 from pathlib import Path
-from pydoc import doc
-from turtle import up
 from typing import Any
 
 import tomlkit

@@ -34,7 +34,9 @@ def handle_exception(
     err = rich.console.Console(stderr=True)
 
     if args.pdb:
-        err.print(__("[red]Exception occurred while building, starting debugger:[/]"))
+        err.print(
+            __("[red]Exception occurred while building, " "starting debugger:[/]")
+        )
         traceback.print_exc()
         pdb.post_mortem(sys.exc_info()[2])  # type: ignore
     else:
@@ -56,7 +58,8 @@ def handle_exception(
             tbpath = save_traceback(app)
             err.print(
                 __(
-                    f"[red]The full traceback has been saved in {tbpath}, if you want to report the issue to the developers.[/]"
+                    f"[red]The full traceback has been saved in {tbpath}, "
+                    "if you want to report the issue to the developers.[/]"
                 )
             )
         elif isinstance(exception, RuntimeError) and "recursion depth" in str(

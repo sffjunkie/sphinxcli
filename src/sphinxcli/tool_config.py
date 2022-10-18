@@ -14,8 +14,8 @@ from sphinxcli.defaults import (
     PYPROJECT_TABLE_NAME,
 )
 from sphinxcli.util import str_to_list
-from sphinxcli.types import Setting, Builder, Target
-from sphinxcli.toml import read_document, get_table
+from sphinxcli.types import Setting, Builder
+from sphinxcli.toml import get_table
 
 
 @dataclass
@@ -66,7 +66,7 @@ class Settings:
             try:
                 value = getattr(self, name)
                 return none_to_blank(value)
-            except:
+            except AttributeError:
                 pass
 
         max_len = max([len(f.name) for f in fields(self)])

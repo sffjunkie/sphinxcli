@@ -1,6 +1,4 @@
-import locale
 import sys
-from dataclasses import fields
 from pathlib import Path
 
 import rich_click as click
@@ -13,11 +11,9 @@ from sphinxcli.build import BuildParameters, build_docs
 from sphinxcli.check import check_build_parameters
 from sphinxcli.clean import clean_all
 from sphinxcli.defaults import DEFAULT_SOURCE_PATH, DEFAULT_TARGET_PATH
-from sphinxcli.help import help_commands
 from sphinxcli.repl import build_repl
 from sphinxcli.tool_config import ToolConfig
 from sphinxcli.util import str_to_list
-from sphinxcli.pyproject import ensure_sphinxcli_table
 
 try:
     from sphinx.application import Sphinx
@@ -135,7 +131,10 @@ def settings(ctx: click.core.Context) -> None:
     "-o",
     "--order",
     default="",
-    help='Either "builder" to output files in `target/builder/language` or "language" to output files in `target/language/builder`',
+    help=(
+        'Either "builder" to output files in `target/builder/language` or '
+        '"language" to output files in `target/language/builder`'
+    ),
 )
 # @click.option("-a", "--all", is_flag=True, default=False)
 def build(
@@ -154,9 +153,11 @@ def build(
 
     Arguments:
 
-        builders: A Sphinx builder name or list of builder names separated by | characters e.g. html|latex
+        builders: A Sphinx builder name or list of builder names
+        separated by : characters e.g. html:latex
 
-        languages: A language or list of languages to generate separated by | characters e.g. `en` or `en|fr`
+        languages: A language or list of languages to generate
+        separated by : characters e.g. `en` or `en:fr`
     """
     console = ctx.obj["console"]
     tool_config = ctx.obj["config"]

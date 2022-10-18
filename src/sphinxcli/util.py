@@ -1,5 +1,4 @@
 from sphinxcli.defaults import LIST_SEPARATOR
-from sphinxcli.types import Builder
 
 
 def str_to_list(text: str) -> list[str]:

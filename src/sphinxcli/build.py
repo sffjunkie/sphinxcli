@@ -8,10 +8,9 @@ import rich
 from sphinx.util.console import nocolor
 from sphinx.util.docutils import patch_docutils, docutils_namespace
 
-from sphinxcli.defaults import DEFAULT_TARGET_ORDER, LIST_SEPARATOR
+from sphinxcli.defaults import DEFAULT_TARGET_ORDER
 from sphinxcli.exec import exec_sphinx
 from sphinxcli.logging import add_log_handler
-from sphinxcli.parse import parse_sphinx_output
 from sphinxcli.tool_config import ToolConfig
 from sphinxcli.util import str_to_list
 
