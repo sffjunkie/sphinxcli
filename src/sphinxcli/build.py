@@ -2,7 +2,7 @@ import io
 import types
 from itertools import product
 from pathlib import Path
-from typing import Generator, NamedTuple, TypedDict
+from typing import Any, Generator, NamedTuple, TypedDict
 
 import rich
 from sphinx.util.console import nocolor
@@ -143,4 +143,4 @@ def build_docs(tool_config: ToolConfig, params: BuildParameters) -> None:
             args = types.SimpleNamespace()
             exec_sphinx(app, args)
 
-    parse_sphinx_output(status, warning, log)
+    # parse_sphinx_output(status, warning, log)
