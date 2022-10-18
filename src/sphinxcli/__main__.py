@@ -8,6 +8,7 @@ import rich
 import rich.console
 import rich.traceback
 
+from sphinxcli import __version__
 from sphinxcli.build import BuildParameters, build_docs
 from sphinxcli.check import check_build_parameters
 from sphinxcli.clean import clean_all
@@ -15,6 +16,8 @@ from sphinxcli.defaults import DEFAULT_SOURCE_PATH, DEFAULT_TARGET_PATH
 from sphinxcli.help import help_commands
 from sphinxcli.repl import build_repl
 from sphinxcli.tool_config import ToolConfig
+from sphinxcli.util import str_to_list
+from sphinxcli.pyproject import ensure_sphinxcli_table
 
 try:
     from sphinx.application import Sphinx
