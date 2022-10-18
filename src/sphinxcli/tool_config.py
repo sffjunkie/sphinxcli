@@ -47,13 +47,13 @@ class Settings:
         "language" that outputs to "language/builder"
     """
 
-    source: Path
-    target: Path
-    builders: list[Builder]
-    languages: list[str]
-    config: Path
-    doctree: Path | None
-    target_order: str
+    source: Path | None = None
+    target: Path | None = None
+    builders: list[Builder] = field(default_factory=list)
+    languages: list[str] = field(default_factory=list)
+    config: Path | None = None
+    doctree: Path | None = None
+    target_order: str = ""
 
     def names(self) -> list[str]:
         return [f.name for f in fields(self)]
