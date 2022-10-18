@@ -2,15 +2,18 @@
 
 from json import tool
 from pathlib import Path
+from pydoc import doc
+from turtle import up
 from typing import Any
 
 import tomlkit
 import tomlkit.container
 import tomlkit.items
 
+from sphinxcli.findfile import rfindfile
 from sphinxcli.defaults import PYPROJECT_TABLE_NAME
 from sphinxcli.types import Setting
-from sphinxcli.toml import write_document, read_document
+from sphinxcli.toml import write_document, read_document, get_table
 
 
 def sphinxcli_default_table() -> tomlkit.items.Table:
@@ -41,41 +44,75 @@ def sphinxcli_default_table() -> tomlkit.items.Table:
     return table
 
 
-def ensure_sphinxcli_table(pyproject: Path):
-    """Create the sphinxcli table within pyproject.toml"""
-    data = read_document(pyproject)
+def ensure_sphinxcli_table(document: tomlkit.TOMLDocument) -> bool:
+    """Ensure there is a sphinxcli table within the TOML document
 
-    tool_table = data["tool"]
-    if isinstance(tool_table, tomlkit.items.Table):
-        if PYPROJECT_TABLE_NAME not in tool_table:
-            tool_config = sphinxcli_default_table()
-            tool_table[PYPROJECT_TABLE_NAME] = tool_config
-            write_document(pyproject, data)
+    Returns:
+        True if the table was created or False if it was already there.
+    """
+    pyproject_table = get_table(document, PYPROJECT_TABLE_NAME)
+    if pyproject_table is None:
+        pyproject_table = sphinxcli_default_table()
+        document[PYPROJECT_TABLE_NAME] = pyproject_table
+        return True
 
-
-def set_value(pyproject: Path, setting: Setting):
-    """Set a value in the sphinxcli table"""
-    data = read_document(pyproject)
-    tool_table = data["tool"]
-    if isinstance(tool_table, tomlkit.items.Table):
-        sphinxcli_table = tool_table[PYPROJECT_TABLE_NAME]
-
-        if isinstance(sphinxcli_table, tomlkit.items.Table):
-            sphinxcli_table[setting.name] = setting.value
-            write_document(pyproject, data)
+    return False
 
 
-def get_value(pyproject: Path, setting: Setting):
-    """Set a value in the sphinxcli table"""
-    data = read_document(pyproject)
-    tool_table = data["tool"]
-    if isinstance(tool_table, tomlkit.items.Table):
-        sphinxcli_table = tool_table[PYPROJECT_TABLE_NAME]
+def find(path: Path | None = None) -> Path | None:
+    """Find the pyproject.toml file ion the path specified
+    or the current working directory if not specified.
+    """
+    if path is None:
+        path = Path.cwd()
+    pyproject = rfindfile("pyproject.toml")
+    return pyproject
 
-        if (
-            isinstance(sphinxcli_table, tomlkit.items.Table)
-            and setting.name in sphinxcli_table
-        ):
-            return setting.value
 
-    return KeyError(f"Unable to get setting {setting.name}")
+def load(path: Path | None = None) -> tuple[Path | None, tomlkit.TOMLDocument | None]:
+    """Load the pyproject.toml file"""
+    if (pyproject := find(path)) is not None:
+        document = read_document(pyproject)
+        if ensure_sphinxcli_table(document):
+            write_document(pyproject, document)
+        return pyproject, document
+
+    return None, None
+
+
+def get_value(pyproject: Path, setting: Setting) -> Any:
+    """Read a value from the sphinxcli table"""
+    document = read_document(pyproject)
+    if document is None:
+        return None
+
+    pyproject_table = get_table(document, PYPROJECT_TABLE_NAME)
+    if pyproject_table is None:
+        return None
+
+    if setting.name not in pyproject_table:
+        raise KeyError(f"Unknown setting {setting.name}")
+
+    return pyproject_table[setting.name]
+
+
+def set_value(pyproject: Path, setting: Setting) -> Any:
+    """Set a value in the sphinxcli table and write to disk"""
+    document = read_document(pyproject)
+    if document is None:
+        return None
+
+    pyproject_table = get_table(document, PYPROJECT_TABLE_NAME)
+    if pyproject_table is None:
+        return None
+
+    if setting.name not in pyproject_table:
+        raise KeyError(f"Unknown setting {setting.name}")
+
+    if (
+        setting.name in pyproject_table
+        and setting.value != pyproject_table[setting.name]
+    ):
+        pyproject_table[setting.name] = setting.value
+        write_document(pyproject, document)
+        return setting.value

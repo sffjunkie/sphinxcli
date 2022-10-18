@@ -80,30 +80,37 @@ class Settings:
 
 
 class ToolConfig:
-    pyproject: Path | None
+    _pyproject: Path
     settings: Settings
 
-    def __init__(self):
-        tool_config, pyproject = load_config()
+    def load(self):
+        pyproject, document = sphinxcli.pyproject.load()
+        if document is None or pyproject is None:
+            raise FileNotFoundError("Unable to find pyproject.toml")
+
+        pyproject_table = get_table(document, PYPROJECT_TABLE_NAME)
+        if pyproject_table is None:
+            raise ValueError("Unable to get settings ")
+
         self.pyproject = pyproject
 
-        doctree = tool_config.get("doctree", None)
+        doctree = pyproject_table.get("doctree", None)
         if doctree is not None:
             doctree = Path(self.resolve_dir(doctree))
 
-        builders = list(tool_config.get("builders", DEFAULT_BUILDERS))
-        config = str(tool_config.get("config", ""))
-        source = str(tool_config.get("source", ""))
-        target = str(tool_config.get("target", ""))
-        doctree = str(tool_config.get("doctree", ""))
+        builders = list(pyproject_table.get("builders", DEFAULT_BUILDERS))
+        document = str(pyproject_table.get("config", ""))
+        source = str(pyproject_table.get("source", ""))
+        target = str(pyproject_table.get("target", ""))
+        doctree = str(pyproject_table.get("doctree", ""))
         languages = [
-            str(lang) for lang in tool_config.get("languages", DEFAULT_LANGUAGES)
+            str(lang) for lang in pyproject_table.get("languages", DEFAULT_LANGUAGES)
         ]
-        target_order = str(tool_config.get("target_order", DEFAULT_TARGET_ORDER))
+        target_order = str(pyproject_table.get("target_order", DEFAULT_TARGET_ORDER))
 
         self.settings = Settings(
             builders=builders,
-            config=Path(self.resolve_dir(config)),
+            config=Path(self.resolve_dir(document)),
             source=Path(self.resolve_dir(source)),
             target=Path(self.resolve_dir(target)),
             doctree=Path(self.resolve_dir(doctree)),
@@ -118,19 +125,22 @@ class ToolConfig:
 
         return value
 
-    def set(self, setting: str, value: Any) -> Any:
-        current_value = self.get(setting)
+    def set(self, name: str, value: Any) -> Any:
+        current_value = self.get(name)
         if current_value is None:
             return current_value
 
         if isinstance(current_value, Path) and not isinstance(value, Path):
             result = Path(value)
-            setattr(self, setting, result)
+        elif isinstance(current_value, list) and isinstance(value, str):
+            result = str_to_list(value)
         else:
-            setattr(self, setting, value)
             result = value
 
-        set_value(self.pyproject, "sphinxcli", setting, result)
+        setattr(self.settings, name, result)
+
+        setting = Setting(name, result)
+        sphinxcli.pyproject.set_value(self.pyproject, setting)
         return result
 
     def update(self, other: Self):
@@ -154,17 +164,3 @@ class ToolConfig:
             return expanduser(dir)
 
         return dir
-
-
-def load_pyproject() -> tuple[dict[str, Any], Path | None]:
-    pyproject = rfindfile("pyproject.toml")
-    if pyproject is not None:
-        with open(pyproject, "rb") as configfp:
-            return tomlkit.load(configfp), pyproject
-
-    return {}, None
-
-
-def load_config() -> tuple[dict[str, Any], Path | None]:
-    config, pyproject = load_pyproject()
-    return config["tool"].get("sphinxcli", {}).value, pyproject

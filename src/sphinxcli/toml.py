@@ -1,34 +1,34 @@
+"""Reading and writing of TOML files"""
+
 from pathlib import Path
-from typing import Any
 
 import tomlkit
+import tomlkit.items
+import tomlkit.container
+import tomlkit.toml_file
 
 
-def set_value(pyproject: Path, table: str, setting: str, value: Any):
-    data = toml_to_dict(pyproject)
-
-    tool_config = data["tool"].get(table, None)
-    if tool_config is None:
-        tool_config = {}
-
-    tool_config.update({setting: value})
+def read_document(tomlfile: Path) -> tomlkit.TOMLDocument:
+    """Read a TOMLDocument from a file"""
+    tfile = tomlkit.toml_file.TOMLFile(str(tomlfile))
+    document = tfile.read()
+    return document
 
 
-def toml_to_dict(tomlfile: Path) -> dict[str, Any]:
-    with open(tomlfile, "rb") as tomlfp:
-        data = tomlkit.load(tomlfp)
-        return data
+def write_document(
+    tomlfile: Path,
+    document: tomlkit.TOMLDocument,
+) -> None:
+    """Write a TOMLDocument to a file"""
+    tfile = tomlkit.toml_file.TOMLFile(str(tomlfile))
+    tfile.write(document)
 
 
-def dict_to_toml(data: dict[str, Any], tomlfile: Path) -> None:
-    with open(tomlfile, "wb") as tomlfp:
-        tomlkit.dump(data, tomlfp)
-
-
-def dict_to_sphinxconf(config: dict[str, Any]):
-    ...
-
-
-def toml_to_sphinxconf(tomlfile: Path):
-    data = toml_to_dict(tomlfile)
-    return dict_to_sphinxconf(data)
+def get_table(
+    document: tomlkit.TOMLDocument, table_name: str
+) -> tomlkit.items.Table | None:
+    tool_table = document["tool"]
+    if isinstance(tool_table, tomlkit.container.OutOfOrderTableProxy):
+        sphinxcli_table = tool_table[table_name]
+        if isinstance(sphinxcli_table, tomlkit.items.Table):
+            return sphinxcli_table
