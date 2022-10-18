@@ -43,8 +43,8 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.sphinxcli]
 builders = ["html"]
-config = "src/docs/source"
-source = "src/docs/source"
+config = "src/docs"
+source = "src/docs"
 target = "docs"
-doctree = "src/docs/build/doctree"
+doctree = "artifact/doctree"
 languages = ["en"]
