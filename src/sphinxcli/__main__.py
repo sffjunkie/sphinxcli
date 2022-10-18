@@ -171,10 +171,10 @@ def build(
     else:
         _doc_languages = tool_config.settings.languages
 
-        _source = tool_config.settings.source or Path(DEFAULT_SOURCE_PATH)
-        _target = tool_config.settings.target or Path(DEFAULT_TARGET_PATH)
-        _config = tool_config.settings.config or _source
-        _doctree = tool_config.settings.doctree or _target
+    _source = tool_config.settings.source or Path(DEFAULT_SOURCE_PATH)
+    _target = tool_config.settings.target or Path(DEFAULT_TARGET_PATH)
+    _config = tool_config.settings.config or _source
+    _doctree = tool_config.settings.doctree or _target
 
     if order:
         _target_order = order
