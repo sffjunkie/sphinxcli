@@ -29,7 +29,7 @@ class BuildParameters(TypedDict):
     doctree: Path
     builders: list[Builder] | Builder
     languages: list[str]
-    messages: str
+    # messages: str
     target_order: str
 
 
