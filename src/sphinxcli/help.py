@@ -10,7 +10,7 @@ def help_commands(ctx: click.core.Context, show_repl_command: bool = True):
     command_names = {name for name in group.commands}
     if not show_repl_command:
         command_names.remove("repl")
-    rich.print(f"\n[green]Available commands:[/]")
+    rich.print("\n[green]Available commands:[/]")
     max_len = max([len(x) for x in command_names])
     for command in sorted(command_names):
         cmd = group.commands[command]
