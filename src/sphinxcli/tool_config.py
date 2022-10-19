@@ -13,9 +13,9 @@ from sphinxcli.defaults import (
     DEFAULT_TARGET_ORDER,
     PYPROJECT_TABLE_NAME,
 )
-from sphinxcli.util import str_to_list
-from sphinxcli.types import Setting, Builder
 from sphinxcli.toml import get_table
+from sphinxcli.types import Builder, Setting
+from sphinxcli.util import str_to_list
 
 
 @dataclass

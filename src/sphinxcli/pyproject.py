@@ -7,10 +7,10 @@ import tomlkit
 import tomlkit.container
 import tomlkit.items
 
-from sphinxcli.findfile import rfindfile
 from sphinxcli.defaults import PYPROJECT_TABLE_NAME
+from sphinxcli.findfile import rfindfile
+from sphinxcli.toml import get_table, read_document, write_document
 from sphinxcli.types import Setting
-from sphinxcli.toml import write_document, read_document, get_table
 
 
 def sphinxcli_default_table() -> tomlkit.items.Table:

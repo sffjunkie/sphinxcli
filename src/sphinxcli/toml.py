@@ -3,8 +3,8 @@
 from pathlib import Path
 
 import tomlkit
-import tomlkit.items
 import tomlkit.container
+import tomlkit.items
 import tomlkit.toml_file
 
 

@@ -6,7 +6,7 @@ from typing import Any, Generator, NamedTuple, TypedDict
 
 import rich
 from sphinx.util.console import nocolor
-from sphinx.util.docutils import patch_docutils, docutils_namespace
+from sphinx.util.docutils import docutils_namespace, patch_docutils
 
 from sphinxcli.defaults import DEFAULT_TARGET_ORDER
 from sphinxcli.exec import exec_sphinx

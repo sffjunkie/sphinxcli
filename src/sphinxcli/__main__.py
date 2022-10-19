@@ -1,10 +1,10 @@
 import sys
 from pathlib import Path
 
-import rich_click as click
 import rich
 import rich.console
 import rich.traceback
+import rich_click as click
 
 from sphinxcli import __version__
 from sphinxcli.build import BuildParameters, build_docs
