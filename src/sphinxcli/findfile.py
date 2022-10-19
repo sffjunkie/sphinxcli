@@ -48,7 +48,8 @@ def rfindfile_in_paths(
         stop_file: If specified and a file with the same name exists in the folder
                    being scanned before the filename we're searching for is found then
                    return None
-        first: If True then the first match found is returned else all matches are returned
+        first: If True then the first match found is returned
+               else all matches are returned
 
 
     """
@@ -57,7 +58,7 @@ def rfindfile_in_paths(
 
     entries: list[Path] = []
     for path in paths:
-        if (file := rfindfile(filename, path, stop_file)) != None:
+        if (file := rfindfile(filename, path, stop_file)) is not None:
             entries.append(file)
 
             if first:
@@ -78,7 +79,8 @@ def findfile_in_paths(
         filename: filename to find
         paths: Paths to search or current working directory if not specified
         recursive: Recurse into sub directories
-        first: If True then the first match found is returned else all matches are returned
+        first: If True then the first match found is returned
+            else all matches are returned
 
     Returns:
         list of file Paths found
@@ -90,7 +92,7 @@ def findfile_in_paths(
     for path in paths:
         if (
             file := findfile(filename, path, recursive)
-        ) != None and file not in entries:
+        ) is not None and file not in entries:
             entries.append(file)
 
             if first:
