@@ -54,10 +54,6 @@ exclude = [
     "poetry.lock",
 ]
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
 [tool.sphinxcli]
 builders = ["html"]
 config = "src/docs"
@@ -65,3 +61,7 @@ source = "src/docs"
 target = "docs"
 doctree = "artifact/doctree"
 languages = ["en"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
