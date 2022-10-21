@@ -24,7 +24,7 @@ def write_document(
     tfile.write(document)
 
 
-def get_table(
+def get_tool_table(
     document: tomlkit.TOMLDocument, table_name: str
 ) -> tomlkit.items.Table | None:
     tool_table = document["tool"]

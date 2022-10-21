@@ -9,7 +9,7 @@ import tomlkit.items
 
 from sphinxcli.defaults import PYPROJECT_TABLE_NAME
 from sphinxcli.findfile import rfindfile
-from sphinxcli.toml import get_table, read_document, write_document
+from sphinxcli.toml import get_tool_table, read_document, write_document
 from sphinxcli.types import Setting
 
 
@@ -67,7 +67,7 @@ def get_value(pyproject: Path, setting: Setting) -> Any:
     if document is None:
         return None
 
-    pyproject_table = get_table(document, PYPROJECT_TABLE_NAME)
+    pyproject_table = get_tool_table(document, PYPROJECT_TABLE_NAME)
     if pyproject_table is None:
         return None
 
@@ -83,7 +83,7 @@ def set_value(pyproject: Path, setting: Setting) -> Any:
     if document is None:
         return None
 
-    pyproject_table = get_table(document, PYPROJECT_TABLE_NAME)
+    pyproject_table = get_tool_table(document, PYPROJECT_TABLE_NAME)
     if pyproject_table is None:
         return None
 
