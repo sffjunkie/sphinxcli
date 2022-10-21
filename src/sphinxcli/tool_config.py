@@ -13,7 +13,7 @@ from sphinxcli.defaults import (
     DEFAULT_TARGET_ORDER,
     PYPROJECT_TABLE_NAME,
 )
-from sphinxcli.toml import get_table
+from sphinxcli.toml import get_tool_table
 from sphinxcli.types import Builder, Setting
 from sphinxcli.util import str_to_list
 
@@ -85,7 +85,7 @@ class ToolConfig:
         if document is None or pyproject is None:
             raise FileNotFoundError("Unable to find pyproject.toml")
 
-        pyproject_table = get_table(document, PYPROJECT_TABLE_NAME)
+        pyproject_table = get_tool_table(document, PYPROJECT_TABLE_NAME)
         if pyproject_table is None:
             raise ValueError("Unable to get settings ")
 
