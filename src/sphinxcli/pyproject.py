@@ -15,8 +15,8 @@ from sphinxcli.types import Setting
 
 def sphinxcli_default_table() -> tomlkit.items.Table:
     """Create the default sphinxcli table definition"""
+    root = tomlkit.table()
     table = tomlkit.table()
-    table.name = "tool.sphinxcli"
 
     buidlers = tomlkit.array()
     buidlers.extend(["html"])
@@ -38,7 +38,8 @@ def sphinxcli_default_table() -> tomlkit.items.Table:
     languages.extend(["en"])
     table.append("languages", languages)
 
-    return table
+    root["tool.sphinxcli"] = table
+    return root
 
 
 def find(path: Path | None = None) -> Path | None:
