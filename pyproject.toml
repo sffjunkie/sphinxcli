@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sphinxcli"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 authors = ["Simon Kennedy <sffjunkie+code@gmail.com>"]
 readme = "ReadMe.md"
