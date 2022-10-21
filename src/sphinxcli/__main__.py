@@ -47,22 +47,43 @@ class SettingCommand(click.Command):
 
 @click.group(invoke_without_command=True)
 @click.pass_context
-def cli(ctx: click.core.Context):
+@click.option(
+    "-p",
+    "--project",
+    type=click.Path(exists=True),
+    help="Path to project root",
+)
+def cli(ctx: click.core.Context, project: click.Path | None):
     """A Sphinx document creation CLI."""
-    rich.traceback.install(suppress=[click])
-    console = rich.console.Console(highlight=False)
-
-    if Sphinx is None:
-        console.print(sphinx_not_found())
-        sys.exit(1)
-
-    tool_config = ToolConfig()
-    tool_config.load()
 
     ctx.ensure_object(dict)
-    ctx.obj["console"] = console
-    ctx.obj["config"] = tool_config
-    ctx.obj["in_repl"] = False
+    # group is executed after every command so only do the following once
+    if "initialized" not in ctx.obj:
+        rich.traceback.install(suppress=[click])
+        console = rich.console.Console(highlight=False)
+
+        if Sphinx is None:
+            console.print(sphinx_not_found())
+            sys.exit(1)
+
+        if project is None:
+            project_root = Path.cwd()
+        else:
+            project_root = Path(str(project))
+
+        tool_config = ToolConfig()
+        if tool_config.load(project_root) is None:
+            rich.print(
+                "[yellow]sphinxcli: tool.sphinxcli table not found "
+                f"in pyproject.toml in path {project_root}[/]"
+            )
+            exit(1)
+
+        ctx.obj["console"] = console
+        ctx.obj["config"] = tool_config
+        ctx.obj["in_repl"] = False
+
+    ctx.obj["initialized"] = True
 
     if ctx.invoked_subcommand is None:
         ctx.invoke(repl)
