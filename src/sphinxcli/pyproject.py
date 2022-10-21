@@ -41,21 +41,6 @@ def sphinxcli_default_table() -> tomlkit.items.Table:
     return table
 
 
-def ensure_sphinxcli_table(document: tomlkit.TOMLDocument) -> bool:
-    """Ensure there is a sphinxcli table within the TOML document
-
-    Returns:
-        True if the table was created or False if it was already there.
-    """
-    pyproject_table = get_table(document, PYPROJECT_TABLE_NAME)
-    if pyproject_table is None:
-        pyproject_table = sphinxcli_default_table()
-        document[PYPROJECT_TABLE_NAME] = pyproject_table
-        return True
-
-    return False
-
-
 def find(path: Path | None = None) -> Path | None:
     """Find the pyproject.toml file ion the path specified
     or the current working directory if not specified.
@@ -70,8 +55,6 @@ def load(path: Path | None = None) -> tuple[Path | None, tomlkit.TOMLDocument | 
     """Load the pyproject.toml file"""
     if (pyproject := find(path)) is not None:
         document = read_document(pyproject)
-        if ensure_sphinxcli_table(document):
-            write_document(pyproject, document)
         return pyproject, document
 
     return None, None
