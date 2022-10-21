@@ -89,6 +89,7 @@ class ToolConfig:
             raise ValueError("Unable to get settings ")
 
         self.pyproject = pyproject
+        self.project_root = pyproject.parent
 
         doctree = pyproject_table.get("doctree", None)
         if doctree is not None:
