@@ -69,27 +69,21 @@ def build_docs(tool_config: ToolConfig, params: BuildParameters) -> None:
     else:
         builders = _builders
 
-    pyproject = tool_config.pyproject
-    if pyproject is not None:
-        root_path = pyproject.parent
-    else:
-        root_path = Path.cwd()
-
     source = params["source"]
     if not source.is_absolute():
-        source = root_path / source
+        source = tool_config.project_root / source
 
     base = params["target"]
     if not base.is_absolute():
-        base = root_path / base
+        base = tool_config.project_root / base
 
     doctree = params["doctree"]
     if not doctree.is_absolute():
-        doctree = root_path / doctree
+        doctree = tool_config.project_root / doctree
 
     config = params["config"]
     if not config.is_absolute():
-        config = root_path / config
+        config = tool_config.project_root / config
 
     languages = params["languages"]
     target_order = params["target_order"]
