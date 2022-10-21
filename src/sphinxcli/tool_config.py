@@ -3,6 +3,7 @@ from os import environ
 from pathlib import Path
 from typing import Any
 
+import tomlkit.items
 from typing_extensions import Self
 
 import sphinxcli.pyproject
@@ -79,14 +80,14 @@ class ToolConfig:
     _pyproject: Path
     settings: Settings
 
-    def load(self):
-        pyproject, document = sphinxcli.pyproject.load()
+    def load(self, pyproject_path: Path | None = None) -> tomlkit.items.Table | None:
+        pyproject, document = sphinxcli.pyproject.load(pyproject_path)
         if document is None or pyproject is None:
-            raise FileNotFoundError("Unable to find pyproject.toml")
+            return
 
         pyproject_table = get_tool_table(document, PYPROJECT_TABLE_NAME)
         if pyproject_table is None:
-            raise ValueError("Unable to get settings ")
+            return
 
         self.pyproject = pyproject
         self.project_root = pyproject.parent
@@ -114,6 +115,8 @@ class ToolConfig:
             languages=languages,
             target_order=target_order,
         )
+
+        return pyproject_table
 
     def get(self, setting: str) -> Any:
         value = getattr(self.settings, setting, None)
