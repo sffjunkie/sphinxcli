@@ -48,7 +48,7 @@ def find(path: Path | None = None) -> Path | None:
     """
     if path is None:
         path = Path.cwd()
-    pyproject = rfindfile("pyproject.toml")
+    pyproject = rfindfile("pyproject.toml", path)
     return pyproject
 
 
