@@ -4,6 +4,7 @@ from pathlib import Path
 
 import tomlkit
 import tomlkit.container
+import tomlkit.exceptions
 import tomlkit.items
 import tomlkit.toml_file
 
@@ -27,8 +28,9 @@ def write_document(
 def get_tool_table(
     document: tomlkit.TOMLDocument, table_name: str
 ) -> tomlkit.items.Table | None:
-    tool_table = document["tool"]
-    if isinstance(tool_table, tomlkit.container.OutOfOrderTableProxy):
-        sphinxcli_table = tool_table[table_name]
+    try:
+        sphinxcli_table = document["tool"][table_name]  # type: ignore
         if isinstance(sphinxcli_table, tomlkit.items.Table):
             return sphinxcli_table
+    except tomlkit.exceptions.NonExistentKey:
+        return None
