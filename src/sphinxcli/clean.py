@@ -4,6 +4,8 @@ from shutil import rmtree
 
 import rich
 
+from sphinxcli.tool_config import ToolConfig
+
 
 def clean_docs(target: Path) -> bool:
     target = target.resolve()
@@ -29,12 +31,15 @@ def clean_doctrees(doctrees: Path) -> bool:
         return True
 
 
-def clean_all(target: Path, doctrees: Path):
+def clean_all(tool_config: ToolConfig):
+    outdir = Path(tool_config.settings.target or "build")
+    doctreedir = Path(tool_config.settings.doctree or outdir)
+
     rich.print("[green]Cleaning all generated files[/]")
 
-    if clean_docs(target):
-        rich.print(f"  [green]Removed documents in {target}...[/]")
+    if clean_docs(outdir):
+        rich.print(f"  [green]Removed documents in {outdir}...[/]")
 
-    if commonpath([doctrees, target]) != target:
-        if clean_doctrees(doctrees):
-            rich.print(f"  [green]Removed doctrees in {doctrees}...[/]")
+    if commonpath([doctreedir, outdir]) != outdir:
+        if clean_doctrees(doctreedir):
+            rich.print(f"  [green]Removed doctrees in {doctreedir}...[/]")

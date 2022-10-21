@@ -228,10 +228,8 @@ def clean(ctx: click.core.Context):
     """Clean any generated files"""
     console = ctx.obj["console"]
     tool_config = ctx.obj["config"]
-    outdir = Path(tool_config.settings.target or "build")
-    doctreedir = Path(tool_config.settings.doctree or outdir)
 
-    result = clean_all(outdir, doctreedir)
+    result = clean_all(tool_config)
     if not ctx.obj["in_repl"]:
         sys.exit(result)
     else:
