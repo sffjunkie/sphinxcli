@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field, fields
 from os import environ
-from os.path import expanduser
 from pathlib import Path
 from typing import Any
 
@@ -107,10 +106,10 @@ class ToolConfig:
 
         self.settings = Settings(
             builders=builders,
-            config=Path(self.resolve_dir(document)),
-            source=Path(self.resolve_dir(source)),
-            target=Path(self.resolve_dir(target)),
-            doctree=Path(self.resolve_dir(doctree)),
+            config=self.resolve_dir(document),
+            source=self.resolve_dir(source),
+            target=self.resolve_dir(target),
+            doctree=self.resolve_dir(doctree),
             languages=languages,
             target_order=target_order,
         )
@@ -143,7 +142,7 @@ class ToolConfig:
     def update(self, other: Self):
         self.settings = other.settings
 
-    def resolve_dir(self, dir: str) -> str:
+    def resolve_dir(self, dir: str) -> Path:
         if dir.startswith("$"):
             slash = dir.find("/")
             if slash != -1:
@@ -157,7 +156,10 @@ class ToolConfig:
             except KeyError:
                 pass
 
-        if dir.startswith("~"):
-            return expanduser(dir)
+        resolved = Path(dir)
+        resolved = Path.expanduser(resolved)
 
-        return dir
+        if resolved.is_absolute():
+            return resolved.resolve()
+
+        return self.project_root / resolved
